@@ -4,7 +4,7 @@ import { Navbar } from "./components/layout/Navbar";
 import { theme } from "./theme";
 //import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { LoginPage } from "./pages/login/LoginPage";
-import { SearchPage } from "./pages/search/SearchPage";
+import { DogsHomePage } from "./pages/home/DogsHome";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/search" element={<SearchPage />} />
+          <Route path="/search" element={<DogsHomePage />} />
           {/* <Route element={<ProtectedRoute />}>
             <Route
               path="/*"

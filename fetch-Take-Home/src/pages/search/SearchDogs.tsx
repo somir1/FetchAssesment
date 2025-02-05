@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, Grid, Pagination } from "@mui/material";
-import {
-  fetchDogBreeds,
-  fetchDogDetails,
-  searchDogs,
-  matchFavoriteDog,
-} from "../../apis";
+import { fetchDogBreeds, fetchDogDetails, searchDogs } from "../../apis";
 import { Dog, SortOrder, SearchParams } from "../../types";
 import { DogCard } from "../../components/dogs/DogCard";
 import { Button } from "../../components/ui/Button";
-import { SelectDropdown } from "../../components/ui/SelectDropdown";
+import { SelectDropdown } from "../../components/ui/SelectDropDown";
 
-export const SearchPage = () => {
-  const SORT_OPTIONS: {
-    label: string;
-    value: { field: "breed" | "name" | "age"; order: "asc" | "desc" };
-  }[] = [
+interface SearchDogsProps {
+  favoriteDogs: string[];
+  toggleFavorite: (id: string) => void;
+}
+
+export const SearchDogs = ({
+  favoriteDogs,
+  toggleFavorite,
+}: SearchDogsProps) => {
+  const SORT_OPTIONS = [
     { label: "Breed (A-Z)", value: { field: "breed", order: "asc" } },
     { label: "Breed (Z-A)", value: { field: "breed", order: "desc" } },
     { label: "Name (A-Z)", value: { field: "name", order: "asc" } },
@@ -31,8 +31,6 @@ export const SearchPage = () => {
   const [totalResults, setTotalResults] = useState<number>(0);
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [sortField, setSortField] = useState<"breed" | "name" | "age">("breed");
-  const [favoriteDogs, setFavoriteDogs] = useState<string[]>([]);
-  const [matchedDog, setMatchedDog] = useState<Dog | null>(null);
   const [selectedSort, setSelectedSort] = useState(SORT_OPTIONS[0]);
 
   useEffect(() => {
@@ -48,18 +46,18 @@ export const SearchPage = () => {
           breeds: selectedBreed ? [selectedBreed] : undefined,
           size: 10,
           from: (page - 1) * 10,
-          sortField: sortField,
-          sortOrder: sortOrder,
+          sortField,
+          sortOrder,
         };
 
         const resultIds = await searchDogs(params);
 
         setTotalResults(resultIds.total);
-        if (resultIds.resultIds.length > 0) {
-          setDogs(await fetchDogDetails(resultIds.resultIds));
-        } else {
-          setDogs([]);
-        }
+        setDogs(
+          resultIds.resultIds.length > 0
+            ? await fetchDogDetails(resultIds.resultIds)
+            : []
+        );
       } catch (error) {
         console.error("Error fetching dogs:", error);
       }
@@ -67,22 +65,6 @@ export const SearchPage = () => {
 
     fetchDogs();
   }, [selectedBreed, page, sortField, sortOrder]);
-  const toggleFavorite = (id: string) => {
-    setFavoriteDogs((prev) =>
-      prev.includes(id) ? prev.filter((dogId) => dogId !== id) : [...prev, id]
-    );
-  };
-
-  const handleMatch = async () => {
-    if (!favoriteDogs.length) return;
-
-    try {
-      const match = await matchFavoriteDog(favoriteDogs);
-      setMatchedDog((await fetchDogDetails([match.match]))[0]);
-    } catch (error) {
-      console.error("Matching failed", error);
-    }
-  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -113,36 +95,28 @@ export const SearchPage = () => {
             );
             if (selectedOption) {
               setSelectedSort(selectedOption);
-              setSortField(selectedOption.value.field);
-              setSortOrder(selectedOption.value.order);
+              setSortField(
+                selectedOption.value.field as "breed" | "name" | "age"
+              );
+              setSortOrder(selectedOption.value.order as SortOrder);
             }
           }}
         />
+
         <Button
           label="Reset"
           onClick={() => {
             setSelectedBreed("");
             setPage(1);
             setSelectedSort(SORT_OPTIONS[0]);
-            setSortField(SORT_OPTIONS[0].value.field);
-            setSortOrder(SORT_OPTIONS[0].value.order);
+            setSortField(
+              SORT_OPTIONS[0].value.field as "breed" | "name" | "age"
+            );
+            setSortOrder(SORT_OPTIONS[0].value.order as SortOrder);
           }}
           variant="contained"
         />
       </Box>
-
-      {matchedDog && (
-        <Box mb={3}>
-          <Typography variant="h5" color="primary">
-            Your Matched Dog:
-          </Typography>
-          <DogCard
-            dog={matchedDog}
-            isFavorited={false}
-            onToggleFavorite={() => {}}
-          />
-        </Box>
-      )}
 
       {totalResults > 0 && (
         <Typography variant="h6" mb={2}>
@@ -174,16 +148,6 @@ export const SearchPage = () => {
             count={Math.ceil(totalResults / 10)}
             page={page}
             onChange={(_, value) => setPage(value)}
-          />
-        </Box>
-      )}
-
-      {favoriteDogs.length > 0 && (
-        <Box mt={3} display="flex" justifyContent="center">
-          <Button
-            label="Find Your Match"
-            onClick={handleMatch}
-            variant="contained"
           />
         </Box>
       )}

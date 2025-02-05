@@ -87,7 +87,6 @@ export const searchDogs = async (
   if (params.from !== undefined)
     queryParams.append("from", params.from.toString());
 
-  // Apply sorting (default to breed:asc)
   const sortField = params.sortField ?? "breed";
   const sortOrder = params.sortOrder ?? "asc";
   queryParams.append("sort", `${sortField}:${sortOrder}`);
