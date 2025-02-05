@@ -17,4 +17,15 @@ export interface SearchResponse {
   total: number;
 }
 
+export interface SearchParams {
+  breeds?: string[];
+  zipCodes?: string[];
+  ageMin?: number;
+  ageMax?: number;
+  size?: number;
+  from?: number;
+  sortField?: "breed" | "name" | "age";
+  sortOrder?: SortOrder;
+}
+
 export type SortOrder = "asc" | "desc";

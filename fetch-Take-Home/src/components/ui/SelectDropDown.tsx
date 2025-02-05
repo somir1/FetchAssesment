@@ -21,7 +21,6 @@ export const SelectDropdown = <T extends string>({
         onChange={(e) => onChange(e.target.value as T)}
         displayEmpty
       >
-        <MenuItem value="">All {label}s</MenuItem>
         {options.map((option) => (
           <MenuItem key={option} value={option}>
             {option}
