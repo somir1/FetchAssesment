@@ -1,4 +1,4 @@
-Dog Finder
+## Dog Finder
 
 A React + TypeScript app that allows users to search, filter, and favorite dogs, then generate a match based on their selections.
 
