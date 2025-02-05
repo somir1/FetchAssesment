@@ -25,7 +25,11 @@ Match Feature: Generate a best-match dog based on selected favorites.
 
 How Sign-In Works
 1. A user enters their name and email on the login page.
+
 2. The app sends this data to the API login endpoint.
+
 3. If valid, the server responds with an authentication token.
+
 4. This token is stored in an HTTP-only cookie and is automatically included in API requests.
+
 5. The token is valid for 1 hour. After that, users must log in again.
