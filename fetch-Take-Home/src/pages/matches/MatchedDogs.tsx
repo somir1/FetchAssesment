@@ -59,9 +59,9 @@ export const MatchedDogs = ({
         </Box>
       )}
       {matchedDog && (
-        <Box mb={3}>
-          <Typography variant="h5" color="primary">
-            Your Matched Dog:
+        <Box mb={2} sx={{ maxWidth: 300, mx: "auto" }}>
+          <Typography variant="h6" color="primary" textAlign="center">
+            Your Match
           </Typography>
           <DogCard
             dog={matchedDog}
