@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, Stack } from "@mui/material";
 import { InputField } from "../../components/ui/InputField";
 import { Button } from "../../components/ui/Button";
 import { login } from "../../apis";
@@ -51,22 +51,26 @@ export const LoginPage = () => {
         <Typography variant="h4" gutterBottom color="primary">
           Login
         </Typography>
-        <InputField
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <InputField
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-        />
-        <Button
-          label={loading ? "Logging in..." : "Login"}
-          onClick={handleLogin}
-          disabled={loading}
-        />
+
+        <Stack spacing={2}>
+          <InputField
+            label="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <InputField
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+          />
+          <Button
+            label={loading ? "Logging in..." : "Login"}
+            onClick={handleLogin}
+            disabled={loading}
+          />
+        </Stack>
+
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>
             {error}
